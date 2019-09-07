@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestStatus(t *testing.T) {
+func TestExpectsStatus(t *testing.T) {
 	handler := func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	}
@@ -17,5 +17,7 @@ func TestStatus(t *testing.T) {
 
 	mockT2 := new(testing.T)
 	NewRequest(handler).Assert().Status(http.StatusAccepted).Test(mockT2)
-	if !mockT2.Failed() {t.Errorf("Status assertion should fail")}
+	if !mockT2.Failed() {
+		t.Errorf("Status assertion should fail")
+	}
 }

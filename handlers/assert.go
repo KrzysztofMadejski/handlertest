@@ -2,48 +2,22 @@ package handlers
 
 import (
 	"net/http"
-	"net/http/httptest"
 	"testing"
 )
 
 type Assert struct {
 	r *Request
 
-	code int // status code
+	code           int // status code
+	headersSet     http.Header
+	headersMissing http.Header
 }
 
-func (a *Assert) Test(t *testing.T) {
-	// TODO move request creation to request.go?
-
-	// set method & url
-	req, err := http.NewRequest(a.r.method, a.r.url, a.r.getBody())
-	if err != nil {
-		t.Fatal(err.Error())
-	}
-
-	// set headers
-	req.Header = a.r.headers
-
-	// TODO Populate the request's context with our test data.
-	//ctx := req.Context()
-	//ctx = context.WithValue(ctx, "app.auth.token", "abc123")
-	//ctx = context.WithValue(ctx, "app.user",
-	//	&YourUser{ID: "qejqjq", Email: "user@example.com"})
-	//
-	//// Add our context to the request: note that WithContext returns a copy of
-	//// the request, which we must assign.
-	//req = req.WithContext(ctx)
-
-	//req.URL.RawQuery = values.Encode()
-
-
-	recorder := httptest.NewRecorder()
-
-	a.r.handler.ServeHTTP(recorder, req)
-
-	// tests below
-	if a.code > 0 && recorder.Code != a.code {
-		t.Errorf("Expected statusCode %d, got %d", a.code, recorder.Code)
+func NewAssert(r *Request) *Assert {
+	return &Assert{
+		r:              r,
+		headersSet:     make(http.Header),
+		headersMissing: make(http.Header),
 	}
 }
 
@@ -56,5 +30,20 @@ func (a *Assert) TestRun() func(*testing.T) {
 func (a *Assert) Status(statusCode int) *Assert {
 	a.code = statusCode
 
+	return a
+}
+
+func (a *Assert) Header(key string, value string) *Assert {
+	a.headersSet.Set(key, value)
+	return a
+}
+
+func (a *Assert) HeaderMissing(key string) *Assert {
+	a.headersMissing.Set(key, "")
+	return a
+}
+
+func (a *Assert) ContentType(contentType string) *Assert {
+	a.headersSet.Set("Content-Type", contentType)
 	return a
 }
