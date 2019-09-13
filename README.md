@@ -36,7 +36,10 @@ Using testify-handlers has following advantages:
 
 Test request is created with `handlers.NewRequest(YourHttpHandler)`. 
 
-Then you can set how it should look like. Methods should be chained: `handlers.NewRequest(YourHttpHandler).POST("/jobs").Json(`{"name": "test"}`)`
+Then you can set how it should look like. Methods should be chained: 
+```
+handlers.NewRequest(YourHttpHandler).POST("/jobs").Json(`{"name": "test"}`)
+```
 
 #### Method & url
 
