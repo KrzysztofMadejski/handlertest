@@ -10,5 +10,5 @@ func (r *Request) ContentType(contentType string) *Request {
 }
 
 const ContentTypeFormUrlEncoded = "application/x-www-form-urlencoded"
-const ContentTypeMultipartFormData = "multipart/form-data"
+const ContentTypeMultipartFormDataPrefix = "multipart/form-data;"
 const ContentTypeJson = "application/json"

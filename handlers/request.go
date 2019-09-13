@@ -1,19 +1,20 @@
 package handlers
 
 import (
+	"io"
 	"net/http"
+	"net/url"
 )
 
 type Request struct {
 	handler http.HandlerFunc
 
-	// TODO how do we keep set options?
-	// 1) in struct: a.r.method  , but then it is hard to make it nill if needed..
-	// 2) in general map[string]interface{}, but then it is harder to access a.r.map["method"] or a.r["method"]
 	method  string
 	url     string
 	headers http.Header
 	body    string
+	files   map[string]map[string]io.Reader
+	fields  url.Values
 
 	// TODO context
 	// TODO or interface
@@ -22,7 +23,7 @@ type Request struct {
 func NewRequest(handler http.HandlerFunc) *Request {
 	return &Request{
 		handler: handler,
-		headers: http.Header{}, // make(map[string]string),
+		headers: http.Header{}, // TODO will make initialize that?
 	}
 }
 

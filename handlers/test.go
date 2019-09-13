@@ -11,7 +11,7 @@ func (a *Assert) Test(t *testing.T) {
 	// TODO move request creation to request.go?
 
 	// set method & url
-	req, err := http.NewRequest(a.r.method, a.r.url, a.r.getBodyReader())
+	req, err := http.NewRequest(a.r.method, a.r.url, a.r.getBodyReader(t))
 	if err != nil {
 		t.Fatal(err.Error())
 	}
@@ -61,6 +61,7 @@ func (a *Assert) Test(t *testing.T) {
 	}
 }
 
+//noinspection GoUnusedExportedFunction
 func TestThisFileIsNotATest(t *testing.T) {
 	t.Fatalf("This method should not be executed during tests")
 }
