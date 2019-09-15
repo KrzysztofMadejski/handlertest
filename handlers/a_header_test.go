@@ -6,10 +6,6 @@ import (
 	"testing"
 )
 
-// TODO Header("Allow-Origin: *")
-
-// TODO ContentType("application/json").
-
 func setHeader(key string, val string) func(w http.ResponseWriter, r *http.Request) {
 	handler := func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set(key, val)
