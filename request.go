@@ -24,7 +24,7 @@ type Request struct {
 func Call(handler http.HandlerFunc) *Request {
 	return &Request{
 		handler: handler,
-		headers: http.Header{}, // TODO will make initialize that?
+		headers: http.Header{},
 	}
 }
 
