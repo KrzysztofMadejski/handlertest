@@ -104,6 +104,22 @@ func TestExpectJsonConformsToFails(t *testing.T) {
 	assert.True(t, mockT.Failed())
 }
 
+// TODO do it for reflect practice
+//func TestExpectJsonConformsToShort(t *testing.T) {
+//	mockT := new(testing.T)
+//	NewRequest(setBody(`[{"id": 1}]`, ContentTypeJson)).Assert().
+//		JsonConformsToShort(func(t *testing.T, list []Obj) {
+//			if len(list) != 1 {
+//				t.Errorf("Expected length 0")
+//			}
+//			if len(list) < 1 || list[0].Id != 1 {
+//				t.Errorf("Expected list[0].id=1")
+//			}
+//		}).Test(mockT)
+//
+//	assert.False(t, mockT.Failed())
+//}
+
 // TODO ConformsToFails on unexported declaration
 
 // TODO test json requests if ContentType not set properly
