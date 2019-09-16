@@ -27,11 +27,6 @@ func TestPostForm(t *testing T) {
 } 
 ```
 
-Using testify-handlers has following advantages:
-- offers more flexibility to create request (you can choose to set from values or not, set some headers or not)
-- leads to less repeat of code (if you want to test multiple things, such as body, status code, set headers) you will create the request only once
-- packs some common testing methods (diff json regardless of indents, set proper headers for form sending, etc.)
-
 ## Request
 
 Test request is created with `handlertest.Call(YourHttpHandler)`. 
