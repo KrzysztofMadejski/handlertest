@@ -137,11 +137,46 @@ a.Custom(func(t *testing.T, response *http.Response) {
 ```
 ## Examples
 
-TODO
+### Get a list of filtered objects
 
-### Get a list of objects
-
-### Create an object based on form data
+```go
+func TestListFilter(t *testing.T) {
+  // TODO to some inserts to test DB
+  // create your request 
+  handlertest.Call(yourHandler).GET("/products?category=a").
+    // then assert your expectations
+    Assert().
+      Status(http.StatusOK).          
+      JsonMatches(func(t *testing.T, products []Product) {
+        // unmarshalling of JSON objects is done for you
+        if len(products) == 0 {
+          t.Errorf("Expected to have some products returned")
+        }   
+        _, p := range products {
+          if p.category != "a" {
+            t.Errorf("Expected filter to return products only of category %s, but got %s", "a", p.category)
+          }       
+        } 
+      }).
+      Test(t)
+}
+```
 
 ### File upload
 
+```go
+func TestUploadAttachments(t *testing T) {
+	// create request
+    handlertest.Call(blog.uploadAttachments).
+        POST("/attachments").
+        FormMultipartMap(map[string]string{
+            "post_id": "1"
+        }).
+        File("files[]", "img1.jpg", "contents").
+        // then assert your expectations
+        Assert().
+        Status(http.StatusCreated).   .
+        ContentType("text/html").
+        Test(t)
+} 
+```
