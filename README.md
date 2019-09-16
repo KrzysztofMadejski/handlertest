@@ -5,20 +5,20 @@ Toolkit for testing http handlers in a verbose way.
 ```go
 func TestAPIGet(t *testing.T) {
   // create your request 
-  handlers.NewRequest(yourHandler).GET("/jobs").
+  handlertest.Call(yourHandler).GET("/jobs").
     // then assert your expectations
     Assert().
       Status(http.StatusOK).          
       Header("Allow-Origin: *").
       JsonBody(`[{"id": 1}]`).
-      JsonConformsTo([]*models.Job).
+      JsonUnmarshallsTo([]*models.Job).
       Test(t)
 }
 
 // or
 
 func TestPostForm(t *testing T) {
-  handlers.NewRequest(yourHandler).FormUrlEncodedMap(map[string]string{
+  handlertest.Call(yourHandler).FormUrlEncodedMap(map[string]string{
     "field": "value"
   }).Assert().
     Status(http.StatusCreated).   .

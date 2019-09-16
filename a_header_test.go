@@ -15,7 +15,7 @@ func setHeader(key string, val string) func(w http.ResponseWriter, r *http.Reque
 
 func TestExpectsHeader(t *testing.T) {
 	mockT := new(testing.T)
-	NewRequest(setHeader("Allow-Origin", "*")).Assert().
+	Call(setHeader("Allow-Origin", "*")).Assert().
 		Header("Allow-Origin", "*").
 		Test(mockT)
 	assert.False(t, mockT.Failed())
@@ -23,7 +23,7 @@ func TestExpectsHeader(t *testing.T) {
 
 func TestExpectsHeaderFails(t *testing.T) {
 	mockT := new(testing.T)
-	NewRequest(emptyHandler).Assert().
+	Call(emptyHandler).Assert().
 		Header("Allow-Origin", "*").
 		Test(mockT)
 
@@ -32,7 +32,7 @@ func TestExpectsHeaderFails(t *testing.T) {
 
 func TestExpectsMissingHeader(t *testing.T) {
 	mockT := new(testing.T)
-	NewRequest(emptyHandler).Assert().
+	Call(emptyHandler).Assert().
 		HeaderMissing("Allow-Origin").
 		Test(mockT)
 
@@ -41,7 +41,7 @@ func TestExpectsMissingHeader(t *testing.T) {
 
 func TestExpectsMissingHeaderFails(t *testing.T) {
 	mockT := new(testing.T)
-	NewRequest(setHeader("Allow-Origin", "*")).Assert().
+	Call(setHeader("Allow-Origin", "*")).Assert().
 		HeaderMissing("Allow-Origin").
 		Test(mockT)
 
@@ -51,7 +51,7 @@ func TestExpectsMissingHeaderFails(t *testing.T) {
 
 func TestExpectsDifferentHeaderValue(t *testing.T) {
 	mockT := new(testing.T)
-	NewRequest(setHeader("Allow-Origin", "http://example.com")).Assert().
+	Call(setHeader("Allow-Origin", "http://example.com")).Assert().
 		Header("Allow-Origin", "*").
 		Test(mockT)
 
@@ -60,7 +60,7 @@ func TestExpectsDifferentHeaderValue(t *testing.T) {
 
 func TestExpectsContentType(t *testing.T) {
 	mockT := new(testing.T)
-	NewRequest(setHeader("Content-Type", ContentTypeJson)).Assert().
+	Call(setHeader("Content-Type", ContentTypeJson)).Assert().
 		ContentType(ContentTypeJson).
 		Test(mockT)
 
@@ -69,7 +69,7 @@ func TestExpectsContentType(t *testing.T) {
 
 func TestExpectsContentTypeFails(t *testing.T) {
 	mockT := new(testing.T)
-	NewRequest(emptyHandler).Assert().
+	Call(emptyHandler).Assert().
 		ContentType(ContentTypeJson).
 		Test(mockT)
 
@@ -78,7 +78,7 @@ func TestExpectsContentTypeFails(t *testing.T) {
 
 func TestExpectsDifferentContentType(t *testing.T) {
 	mockT := new(testing.T)
-	NewRequest(setHeader("Content-Type", ContentTypeFormUrlEncoded)).Assert().
+	Call(setHeader("Content-Type", ContentTypeFormUrlEncoded)).Assert().
 		ContentType(ContentTypeJson).
 		Test(mockT)
 

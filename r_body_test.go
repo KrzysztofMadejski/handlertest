@@ -33,7 +33,7 @@ var expectBody = func(t *testing.T, expectedBody string, contentType string) htt
 
 func TestJsonBody(t *testing.T) {
 	json := `{"f": 1}`
-	NewRequest(expectBody(t, json, ContentTypeJson)).
+	Call(expectBody(t, json, ContentTypeJson)).
 		Json(json).
 		Assert().Test(new(testing.T))
 }
@@ -91,7 +91,7 @@ var expectForm = func(t *testing.T, expectedValues url.Values, is_multipart bool
 
 func TestFormUrlEncoded(t *testing.T) {
 	values := url.Values{"field": []string{"val1", "val2"}}
-	NewRequest(expectForm(t, values, false, "POST", 0)).
+	Call(expectForm(t, values, false, "POST", 0)).
 		FormUrlEncoded(values).
 		Assert().Test(new(testing.T))
 }
@@ -101,18 +101,18 @@ func TestFormUrlEncoded(t *testing.T) {
 // but you might set another one
 func TestFormUrlEncodedSetOtherMethod(t *testing.T) {
 	values := url.Values{"field": []string{"val1", "val2"}}
-	NewRequest(expectForm(t, values, false, "PUT", 0)).
+	Call(expectForm(t, values, false, "PUT", 0)).
 		Method("PUT").FormUrlEncoded(values).
 		Assert().Test(new(testing.T))
 
-	NewRequest(expectForm(t, values, false, "PUT", 0)).
+	Call(expectForm(t, values, false, "PUT", 0)).
 		FormUrlEncoded(values).Method("PUT").
 		Assert().Test(new(testing.T))
 }
 
 func TestFormUrlEncodedMap(t *testing.T) {
 	values := url.Values{"field": []string{"value"}}
-	NewRequest(expectForm(t, values, false, "POST", 0)).
+	Call(expectForm(t, values, false, "POST", 0)).
 		FormUrlEncodedMap(map[string]string{"field": "value"}).
 		Assert().Test(new(testing.T))
 }
@@ -120,7 +120,7 @@ func TestFormUrlEncodedMap(t *testing.T) {
 func TestFormMultipartOneField(t *testing.T) {
 	values := url.Values{"field": []string{"val1"}}
 
-	NewRequest(expectForm(t, values, true, "POST", 0)).
+	Call(expectForm(t, values, true, "POST", 0)).
 		FormMultipart(values).
 		Assert().Test(new(testing.T))
 }
@@ -128,50 +128,50 @@ func TestFormMultipartOneField(t *testing.T) {
 func TestFormMultipartOnlyFields(t *testing.T) {
 	values := url.Values{"field": []string{"val1", "val2"}}
 
-	NewRequest(expectForm(t, values, true, "POST", 0)).
+	Call(expectForm(t, values, true, "POST", 0)).
 		FormMultipart(values).
 		Assert().Test(new(testing.T))
 }
 
 func TestFormMultipartMapOnlyFields(t *testing.T) {
 	values := url.Values{"field": []string{"value"}}
-	NewRequest(expectForm(t, values, true, "POST", 0)).
+	Call(expectForm(t, values, true, "POST", 0)).
 		FormMultipartMap(map[string]string{"field": "value"}).
 		Assert().Test(new(testing.T))
 }
 
 func TestFormMultipartOneFile(t *testing.T) {
-	NewRequest(expectForm(t, url.Values{}, true, "POST", 1)).
+	Call(expectForm(t, url.Values{}, true, "POST", 1)).
 		Files(map[string]map[string]string{"files[]": {"file1.txt": "contents1"}}).
 		Assert().Test(new(testing.T))
 }
 
 func TestFormMultipartMultipleFiles(t *testing.T) {
-	NewRequest(expectForm(t, url.Values{}, true, "POST", 2)).
+	Call(expectForm(t, url.Values{}, true, "POST", 2)).
 		Files(map[string]map[string]string{"files[]": {"file1.txt": "contents1", "file2.txt": "contents2"}}).
 		Assert().Test(new(testing.T))
 }
 
 func TestFormMultipartMultipleFileReaders(t *testing.T) {
-	NewRequest(expectForm(t, url.Values{}, true, "POST", 2)).
+	Call(expectForm(t, url.Values{}, true, "POST", 2)).
 		FileReaders(map[string]map[string]io.Reader{"files[]": {"file1.txt": strings.NewReader("contents1"), "file2.txt": strings.NewReader("contents2")}}).
 		Assert().Test(new(testing.T))
 }
 
 func TestFormMultipartAddFileReader(t *testing.T) {
-	NewRequest(expectForm(t, url.Values{}, true, "POST", 1)).
+	Call(expectForm(t, url.Values{}, true, "POST", 1)).
 		FileReader("files[]", "file1.txt", strings.NewReader("contents1")).
 		Assert().Test(new(testing.T))
 }
 
 func TestFormMultipartAddFile(t *testing.T) {
-	NewRequest(expectForm(t, url.Values{}, true, "POST", 1)).
+	Call(expectForm(t, url.Values{}, true, "POST", 1)).
 		File("files[]", "file1.txt", "contents1").
 		Assert().Test(new(testing.T))
 }
 
 func TestFormMultipartAddFileMultiple(t *testing.T) {
-	NewRequest(expectForm(t, url.Values{}, true, "POST", 2)).
+	Call(expectForm(t, url.Values{}, true, "POST", 2)).
 		File("files[]", "file1.txt", "contents1").
 		File("files[]", "file2.txt", "contents2").
 		Assert().Test(new(testing.T))

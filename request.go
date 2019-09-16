@@ -21,7 +21,7 @@ type Request struct {
 	// TODO or interface
 }
 
-func NewRequest(handler http.HandlerFunc) *Request {
+func Call(handler http.HandlerFunc) *Request {
 	return &Request{
 		handler: handler,
 		headers: http.Header{}, // TODO will make initialize that?
