@@ -12,6 +12,7 @@ type Assert struct {
 	headersSet     http.Header
 	headersMissing http.Header
 	body           func(t *testing.T, body []byte)
+	custom         func(t *testing.T, response *http.Response)
 }
 
 func NewAssert(r *Request) *Assert {
@@ -46,5 +47,10 @@ func (a *Assert) HeaderMissing(key string) *Assert {
 
 func (a *Assert) ContentType(contentType string) *Assert {
 	a.headersSet.Set("Content-Type", contentType)
+	return a
+}
+
+func (a *Assert) Custom(customTest func(t *testing.T, response *http.Response)) *Assert {
+	a.custom = customTest
 	return a
 }

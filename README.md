@@ -83,6 +83,11 @@ Methods creating forms of `Content-Type: multipart/form-data`:
 
 *TBDone*
 
+#### Custom
+
+To implement custom modifications of response not covered by this lib use the below function. Please also file an issue to support your case if it is general enough.
+- `Custom(func(request *http.Request))`
+
 ## Assert 
 
 Once you created a needed request call on it `.Assert()` to get get an object where you can specify assertions.
@@ -124,6 +129,12 @@ to get an unmarshalled response body and test for specific values.
 
 #### Custom
 
+To implement custom assertions you might need that is not covered by this lib use below function. Please also file an issue to support your case if it is general enough
+```go
+a.Custom(func(t *testing.T, response *http.Response) {
+    t.Error("I don't like this response")
+})
+```
 ## Examples
 
 TODO

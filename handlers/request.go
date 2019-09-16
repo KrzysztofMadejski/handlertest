@@ -15,6 +15,7 @@ type Request struct {
 	body    string
 	files   map[string]map[string]io.Reader
 	fields  url.Values
+	custom  func(request *http.Request)
 
 	// TODO context
 	// TODO or interface

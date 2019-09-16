@@ -30,14 +30,17 @@ func (a *Assert) Test(t *testing.T) {
 	//// the request, which we must assign.
 	//req = req.WithContext(ctx)
 
-	//req.URL.RawQuery = values.Encode()
+	if a.r.custom != nil {
+		a.r.custom(req)
+	}
+
+	// ============================
+	// =========== TESTS ==========
 
 	recorder := httptest.NewRecorder()
 
 	a.r.handler.ServeHTTP(recorder, req)
 
-	// ============================
-	// =========== TESTS ==========
 	response := recorder.Result()
 
 	// test status code
@@ -69,6 +72,11 @@ func (a *Assert) Test(t *testing.T) {
 		}
 
 		a.body(t, body)
+	}
+
+	// Run any custom assertions
+	if a.custom != nil {
+		a.custom(t, response)
 	}
 }
 
