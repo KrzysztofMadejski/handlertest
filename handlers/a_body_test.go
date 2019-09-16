@@ -66,7 +66,7 @@ func TestExpectsJsonBodyFails(t *testing.T) {
 func TestExpectJsonType(t *testing.T) {
 	mockT := new(testing.T)
 	NewRequest(setBody(`[{"id": 1}]`, ContentTypeJson)).Assert().
-		JsonTypeOf([]Obj{}).
+		JsonUnmarshallsTo([]Obj{}).
 		Test(mockT)
 	assert.False(t, mockT.Failed())
 }
@@ -74,16 +74,15 @@ func TestExpectJsonType(t *testing.T) {
 func TestExpectJsonTypeFails(t *testing.T) {
 	mockT := new(testing.T)
 	NewRequest(setBody(`{"id": 1}`, ContentTypeJson)).Assert().
-		JsonTypeOf([]Obj{}).
+		JsonUnmarshallsTo([]Obj{}).
 		Test(mockT)
 	assert.True(t, mockT.Failed())
 }
 
-func TestExpectJsonConformsTo(t *testing.T) {
+func TestExpectJsonMatches(t *testing.T) {
 	mockT := new(testing.T)
 	NewRequest(setBody(`[{"id": 1}]`, ContentTypeJson)).Assert().
-		JsonConformsTo([]Obj{}, func(t *testing.T, ret interface{}) {
-			list := ret.([]Obj)
+		JsonMatches(func(t *testing.T, list []Obj) {
 			if len(list) != 1 {
 				t.Errorf("Expected length 0")
 			}
@@ -95,30 +94,43 @@ func TestExpectJsonConformsTo(t *testing.T) {
 	assert.False(t, mockT.Failed())
 }
 
-func TestExpectJsonConformsToFails(t *testing.T) {
+func TestExpectJsonMatchesCantUnmarshall(t *testing.T) {
 	mockT := new(testing.T)
 	NewRequest(setBody(`[{"id": 1}]`, ContentTypeJson)).Assert().
-		JsonConformsTo([]Obj{}, func(t *testing.T, ret interface{}) {
+		JsonMatches(func(t *testing.T, obj Obj) {}).Test(mockT)
+	assert.True(t, mockT.Failed())
+}
+
+func TestExpectJsonMatchesFails(t *testing.T) {
+	mockT := new(testing.T)
+	NewRequest(setBody(`[{"id": 1}]`, ContentTypeJson)).Assert().
+		// TODO allow to use pointers also JsonMatches(func(t *testing.T, list *[]Obj) {
+		JsonMatches(func(t *testing.T, list []Obj) {
 			t.Errorf("Fail because something didn't meet your expectations")
 		}).Test(mockT)
 	assert.True(t, mockT.Failed())
 }
 
-// TODO do it for reflect practice
-//func TestExpectJsonConformsToShort(t *testing.T) {
-//	mockT := new(testing.T)
-//	NewRequest(setBody(`[{"id": 1}]`, ContentTypeJson)).Assert().
-//		JsonConformsToShort(func(t *testing.T, list []Obj) {
-//			if len(list) != 1 {
-//				t.Errorf("Expected length 0")
-//			}
-//			if len(list) < 1 || list[0].Id != 1 {
-//				t.Errorf("Expected list[0].id=1")
-//			}
-//		}).Test(mockT)
-//
-//	assert.False(t, mockT.Failed())
-//}
+func TestExpectJsonMatchesWrongFunc(t *testing.T) {
+	type test struct {
+		name     string
+		function interface{}
+	}
+	for _, tt := range []test{
+		{"Empty func", func() {}},
+
+		{"T should be the first arg", func(Obj, Obj) {}},
+		{"T should be a pointer", func(testing.T, Obj) {}},
+		{"Too many params", func(*testing.T, Obj, Obj) {}},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			mockT := new(testing.T)
+			NewRequest(setBody(`[{"id": 1}]`, ContentTypeJson)).Assert().
+				JsonMatches(tt.function).Test(mockT)
+			assert.True(t, mockT.Failed())
+		})
+	}
+}
 
 // TODO ConformsToFails on unexported declaration
 
