@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"github.com/stretchr/testify/assert"
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -58,6 +59,16 @@ func (a *Assert) Test(t *testing.T) {
 	for key := range a.headersMissing {
 		values := response.Header[key]
 		assert.Empty(t, values, "Expected header %s to be empty", key)
+	}
+
+	// Test body
+	if a.body != nil {
+		body, err := ioutil.ReadAll(response.Body)
+		if err != nil {
+			t.Errorf("Could not read response body: %v", err)
+		}
+
+		a.body(t, body)
 	}
 }
 

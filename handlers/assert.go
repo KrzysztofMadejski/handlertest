@@ -11,6 +11,7 @@ type Assert struct {
 	code           int // status code
 	headersSet     http.Header
 	headersMissing http.Header
+	body           func(t *testing.T, body []byte)
 }
 
 func NewAssert(r *Request) *Assert {
