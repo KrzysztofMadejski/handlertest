@@ -27,6 +27,13 @@ func TestPostForm(t *testing T) {
 } 
 ```
 
+## Semver
+
+This library will follow [semantic versioning](https://semver.org/) and next versions will be released as tags.
+
+For now it is in alpha/exploratory phase. v1 will be released after community feedback is sourced.
+
+
 ## Request
 
 Test request is created with `handlertest.Call(YourHttpHandler)`. 
