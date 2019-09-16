@@ -1,4 +1,4 @@
-package handlers
+package handlertest
 
 func (r *Request) Method(method string) *Request {
 	r.method = method

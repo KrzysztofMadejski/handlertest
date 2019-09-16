@@ -1,4 +1,4 @@
-package handlers
+package handlertest
 
 //func shouldFail(t *testing.T, assertion string) {
 //	if !t.Failed() { t.Errorf("%s assertion should fail", assertion) }

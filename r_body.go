@@ -1,9 +1,8 @@
-package handlers
+package handlertest
 
 import (
 	"bytes"
 	"fmt"
-	"github.com/krzysztofmadejski/testify-handlers/utils"
 	"io"
 	"mime/multipart"
 	"net/url"
@@ -71,7 +70,7 @@ func (r *Request) FormUrlEncoded(values url.Values) *Request {
 }
 
 func (r *Request) FormUrlEncodedMap(values map[string]string) *Request {
-	return r.FormUrlEncoded(utils.ValuesFromMap(values))
+	return r.FormUrlEncoded(ValuesFromMap(values))
 }
 
 func (r *Request) FileReaders(fields map[string]map[string]io.Reader) *Request {
@@ -119,5 +118,5 @@ func (r *Request) FormMultipart(fields url.Values) *Request {
 }
 
 func (r *Request) FormMultipartMap(values map[string]string) *Request {
-	return r.FormMultipart(utils.ValuesFromMap(values))
+	return r.FormMultipart(ValuesFromMap(values))
 }

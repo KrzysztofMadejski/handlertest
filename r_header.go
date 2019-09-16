@@ -1,4 +1,4 @@
-package handlers
+package handlertest
 
 func (r *Request) Header(key string, value string) *Request {
 	r.headers.Set(key, value)
