@@ -2,7 +2,6 @@ package assert_test
 
 import (
 	"github.com/krzysztofmadejski/handlertest"
-	"github.com/stretchr/testify/assert"
 	"net/http"
 	"testing"
 )
@@ -40,5 +39,7 @@ func TestCustomAssertions(t *testing.T) {
 	handlertest.Call(handler).Assert(mockT).Custom(func(t *testing.T, response *http.Response) {
 		t.Error("Fail")
 	})
-	assert.True(t, mockT.Failed())
+	if !mockT.Failed() {
+		t.Errorf("Expected assertion to fail")
+	}
 }

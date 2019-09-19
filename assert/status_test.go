@@ -2,7 +2,6 @@ package assert_test
 
 import (
 	"github.com/krzysztofmadejski/handlertest"
-	"github.com/stretchr/testify/assert"
 	"net/http"
 	"testing"
 )
@@ -14,7 +13,9 @@ func TestExpectsStatus(t *testing.T) {
 
 	mockT1 := new(testing.T)
 	handlertest.Call(handler).Assert(mockT1).Status(http.StatusOK)
-	assert.False(t, mockT1.Failed())
+	if mockT1.Failed() {
+		t.Errorf("Expected assertion to pass")
+	}
 
 	mockT2 := new(testing.T)
 	handlertest.Call(handler).Assert(mockT2).Status(http.StatusAccepted)
