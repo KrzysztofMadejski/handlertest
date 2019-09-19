@@ -10,6 +10,3 @@ func TestImports(t *testing.T) {
 
 	Call(handler).Assert(t).Test()
 }
-
-// TODO find and replace
-var emptyHandler = func(w http.ResponseWriter, r *http.Request) {}

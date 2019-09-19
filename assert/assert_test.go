@@ -1,6 +1,7 @@
-package handlertest
+package assert_test
 
 import (
+	"github.com/krzysztofmadejski/handlertest"
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"testing"
@@ -12,7 +13,7 @@ func TestHandlerIsCalled(t *testing.T) {
 		called = true
 	}
 
-	Call(handler).Assert(new(testing.T)).Test()
+	handlertest.Call(handler).Assert(new(testing.T)).Test()
 
 	if !called {
 		t.Errorf("Handler was not called")
@@ -23,7 +24,7 @@ func TestEmptyTest(t *testing.T) {
 	handler := func(w http.ResponseWriter, r *http.Request) {}
 
 	mockT1 := new(testing.T)
-	Call(handler).Assert(mockT1).Test()
+	handlertest.Call(handler).Assert(mockT1).Test()
 	if mockT1.Failed() {
 		t.Errorf("Empty test should not fail")
 	}
@@ -36,7 +37,7 @@ func TestEmptyTest(t *testing.T) {
 func TestCustomAssertions(t *testing.T) {
 	handler := func(w http.ResponseWriter, r *http.Request) {}
 	mockT := new(testing.T)
-	Call(handler).Assert(mockT).Custom(func(t *testing.T, response *http.Response) {
+	handlertest.Call(handler).Assert(mockT).Custom(func(t *testing.T, response *http.Response) {
 		t.Error("Fail")
 	}).Test()
 	assert.True(t, mockT.Failed())

@@ -14,5 +14,3 @@ func (r *Request) POST(url string) *Request {
 	r.method = "POST"
 	return r.Url(url)
 }
-
-

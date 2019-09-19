@@ -1,6 +1,7 @@
 package handlertest
 
 import (
+	"github.com/krzysztofmadejski/handlertest/assert"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -31,8 +32,8 @@ func Call(handler http.HandlerFunc) *Request {
 	}
 }
 
-func (r *Request) Assert(t *testing.T) *Assert {
-	return newAssert(t, r.createResponse(t))
+func (r *Request) Assert(t *testing.T) *assert.Assert {
+	return assert.New(t, r.createResponse(t))
 }
 
 func (r *Request) createResponse(t *testing.T) *http.Response {

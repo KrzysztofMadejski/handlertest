@@ -1,4 +1,4 @@
-package handlertest
+package assert
 
 import (
 	"github.com/stretchr/testify/assert"

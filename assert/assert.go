@@ -1,4 +1,4 @@
-package handlertest
+package assert
 
 import (
 	"net/http"
@@ -16,7 +16,7 @@ type Assert struct {
 	custom         func(t *testing.T, response *http.Response)
 }
 
-func newAssert(t *testing.T, response *http.Response) *Assert {
+func New(t *testing.T, response *http.Response) *Assert {
 	return &Assert{
 		r:              response,
 		t:              t,
