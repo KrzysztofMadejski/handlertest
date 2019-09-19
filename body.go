@@ -32,7 +32,7 @@ func (r *Request) getBodyReader(t *testing.T) io.Reader {
 
 		for field, files := range r.files {
 			for filename, reader := range files {
-				if c, is_closer := reader.(io.Closer); is_closer {
+				if c, isCloser := reader.(io.Closer); isCloser {
 					defer func() {
 						handle(t, c.Close())
 					}()
@@ -55,22 +55,22 @@ func (r *Request) getBodyReader(t *testing.T) io.Reader {
 	return strings.NewReader(r.body)
 }
 
-func (r *Request) Json(json string) *Request {
+func (r *Request) JSON(json string) *Request {
 	r.body = json
-	return r.ContentType(ContentTypeJson)
+	return r.ContentType(ContentTypeJSON)
 }
 
-func (r *Request) FormUrlEncoded(values url.Values) *Request {
+func (r *Request) FormURLEncoded(values url.Values) *Request {
 	r.body = values.Encode()
 
 	if r.method == "" {
 		r.method = "POST"
 	}
-	return r.ContentType(ContentTypeFormUrlEncoded)
+	return r.ContentType(ContentTypeFormURLEncoded)
 }
 
-func (r *Request) FormUrlEncodedMap(values map[string]string) *Request {
-	return r.FormUrlEncoded(ValuesFromMap(values))
+func (r *Request) FormURLEncodedMap(values map[string]string) *Request {
+	return r.FormURLEncoded(ValuesFromMap(values))
 }
 
 func (r *Request) FileReaders(fields map[string]map[string]io.Reader) *Request {

@@ -56,8 +56,8 @@ func TestExpectsDifferentHeaderValue(t *testing.T) {
 
 func TestExpectsContentType(t *testing.T) {
 	mockT := new(testing.T)
-	handlertest.Call(setHeader("Content-Type", handlertest.ContentTypeJson)).Assert(mockT).
-		ContentType(handlertest.ContentTypeJson)
+	handlertest.Call(setHeader("Content-Type", handlertest.ContentTypeJSON)).Assert(mockT).
+		ContentType(handlertest.ContentTypeJSON)
 
 	assert.False(t, mockT.Failed())
 }
@@ -65,15 +65,15 @@ func TestExpectsContentType(t *testing.T) {
 func TestExpectsContentTypeFails(t *testing.T) {
 	mockT := new(testing.T)
 	handlertest.Call(emptyHandler).Assert(mockT).
-		ContentType(handlertest.ContentTypeJson)
+		ContentType(handlertest.ContentTypeJSON)
 
 	assert.True(t, mockT.Failed())
 }
 
 func TestExpectsDifferentContentType(t *testing.T) {
 	mockT := new(testing.T)
-	handlertest.Call(setHeader("Content-Type", handlertest.ContentTypeFormUrlEncoded)).Assert(mockT).
-		ContentType(handlertest.ContentTypeJson)
+	handlertest.Call(setHeader("Content-Type", handlertest.ContentTypeFormURLEncoded)).Assert(mockT).
+		ContentType(handlertest.ContentTypeJSON)
 
 	assert.True(t, mockT.Failed())
 }

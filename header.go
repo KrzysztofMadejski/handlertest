@@ -9,6 +9,6 @@ func (r *Request) ContentType(contentType string) *Request {
 	return r.Header("Content-Type", contentType)
 }
 
-const ContentTypeFormUrlEncoded = "application/x-www-form-urlencoded"
+const ContentTypeFormURLEncoded = "application/x-www-form-urlencoded"
 const ContentTypeMultipartFormDataPrefix = "multipart/form-data;"
-const ContentTypeJson = "application/json"
+const ContentTypeJSON = "application/json"

@@ -1,6 +1,6 @@
 package handlertest
 
-func (r *Request) Url(url string) *Request {
+func (r *Request) URL(url string) *Request {
 	r.url = url
 	return r
 }

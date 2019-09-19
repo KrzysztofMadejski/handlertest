@@ -33,8 +33,8 @@ var expectBody = func(t *testing.T, expectedBody string, contentType string) htt
 
 func TestJsonBody(t *testing.T) {
 	json := `{"f": 1}`
-	Call(expectBody(t, json, ContentTypeJson)).
-		Json(json).
+	Call(expectBody(t, json, ContentTypeJSON)).
+		JSON(json).
 		Assert(new(testing.T))
 }
 
@@ -51,7 +51,7 @@ var expectForm = func(t *testing.T, expectedValues url.Values, is_multipart bool
 				handle(t, r.ParseMultipartForm(1>>24))
 			}
 		} else { // encoded
-			expectHeader(t, "Content-Type", ContentTypeFormUrlEncoded)(w, r)
+			expectHeader(t, "Content-Type", ContentTypeFormURLEncoded)(w, r)
 			handle(t, r.ParseForm())
 		}
 
@@ -92,7 +92,7 @@ var expectForm = func(t *testing.T, expectedValues url.Values, is_multipart bool
 func TestFormUrlEncoded(t *testing.T) {
 	values := url.Values{"field": []string{"val1", "val2"}}
 	Call(expectForm(t, values, false, "POST", 0)).
-		FormUrlEncoded(values).
+		FormURLEncoded(values).
 		Assert(new(testing.T))
 }
 
@@ -102,18 +102,18 @@ func TestFormUrlEncoded(t *testing.T) {
 func TestFormUrlEncodedSetOtherMethod(t *testing.T) {
 	values := url.Values{"field": []string{"val1", "val2"}}
 	Call(expectForm(t, values, false, "PUT", 0)).
-		Method("PUT").FormUrlEncoded(values).
+		Method("PUT").FormURLEncoded(values).
 		Assert(new(testing.T))
 
 	Call(expectForm(t, values, false, "PUT", 0)).
-		FormUrlEncoded(values).Method("PUT").
+		FormURLEncoded(values).Method("PUT").
 		Assert(new(testing.T))
 }
 
 func TestFormUrlEncodedMap(t *testing.T) {
 	values := url.Values{"field": []string{"value"}}
 	Call(expectForm(t, values, false, "POST", 0)).
-		FormUrlEncodedMap(map[string]string{"field": "value"}).
+		FormURLEncodedMap(map[string]string{"field": "value"}).
 		Assert(new(testing.T))
 }
 

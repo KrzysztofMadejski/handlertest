@@ -7,10 +7,10 @@ func (r *Request) Method(method string) *Request {
 
 func (r *Request) GET(url string) *Request {
 	r.method = "GET"
-	return r.Url(url)
+	return r.URL(url)
 }
 
 func (r *Request) POST(url string) *Request {
 	r.method = "POST"
-	return r.Url(url)
+	return r.URL(url)
 }
