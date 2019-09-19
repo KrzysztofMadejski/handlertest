@@ -33,7 +33,7 @@ func Call(handler http.HandlerFunc) *Request {
 }
 
 func (r *Request) Assert(t *testing.T) *assert.Assert {
-	return &assert.Assert{r.createResponse(t), t}
+	return &assert.Assert{R: r.createResponse(t), T: t}
 }
 
 func (r *Request) createResponse(t *testing.T) *http.Response {

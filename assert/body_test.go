@@ -35,7 +35,7 @@ func TestExpectsBodyFunctionFails(t *testing.T) {
 	handlertest.Call(setBody(`[{"id": 201809}]`, handlertest.ContentTypeJson)).Assert(mockT).
 		Body(func(t *testing.T, body []byte) {
 			var o Obj
-			if err := json.Unmarshal(body, o); err != nil {
+			if err := json.Unmarshal(body, &o); err != nil {
 				t.Errorf("Could not unmarshall body")
 				return
 			}
@@ -119,7 +119,7 @@ func TestExpectJsonMatchesWrongFunc(t *testing.T) {
 		{"Empty func", func() {}},
 
 		{"T should be the first arg", func(Obj, Obj) {}},
-		{"T should be a pointer", func(testing.T, Obj) {}},
+		{"T should be a pointer", func(testing.T, Obj) {}}, // let vet complain about mutex here
 		{"Too many params", func(*testing.T, Obj, Obj) {}},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
