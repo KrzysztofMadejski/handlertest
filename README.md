@@ -177,3 +177,9 @@ func TestUploadAttachments(t *testing T) {
         ContentType("text/html")
 } 
 ```
+
+## Contributing
+
+Kudos go to:
+- [@rafal-brize](https://github.com/rafal-brize) for hardware support 
+- [@joncfoo](https://github.com/joncfoo) for improvement suggestions
