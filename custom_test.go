@@ -8,5 +8,5 @@ import (
 func TestCustom(t *testing.T) {
 	Call(expectHeader(t, "Allow-Origin", "*")).Custom(func(request *http.Request) {
 		request.Header.Set("Allow-Origin", "*")
-	}).Assert(new(testing.T)).Test()
+	}).Assert(new(testing.T))
 }

@@ -17,7 +17,7 @@ func TestMethod(t *testing.T) {
 		}
 	}
 
-	Call(expectMethod("POST")).POST("/jobs").Assert(new(testing.T)).Test()
-	Call(expectMethod("GET")).GET("/jobs").Assert(new(testing.T)).Test()
-	Call(expectMethod("OPTIONS")).Method("OPTIONS").Assert(new(testing.T)).Test()
+	Call(expectMethod("POST")).POST("/jobs").Assert(new(testing.T))
+	Call(expectMethod("GET")).GET("/jobs").Assert(new(testing.T))
+	Call(expectMethod("OPTIONS")).Method("OPTIONS").Assert(new(testing.T))
 }

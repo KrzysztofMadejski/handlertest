@@ -8,5 +8,5 @@ import (
 func TestImports(t *testing.T) {
 	handler := func(http.ResponseWriter, *http.Request) {}
 
-	Call(handler).Assert(t).Test()
+	Call(handler).Assert(t)
 }

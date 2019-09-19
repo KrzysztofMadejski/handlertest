@@ -11,8 +11,7 @@ func TestAPIGet(t *testing.T) {
       Status(http.StatusOK).          
       Header("Allow-Origin: *").
       JsonBody(`[{"id": 1}]`).
-      JsonUnmarshallsTo([]*models.Job).
-      Test()
+      JsonUnmarshallsTo([]*models.Job)
 }
 
 // or
@@ -22,8 +21,7 @@ func TestPostForm(t *testing T) {
     "field": "value"
   }).Assert(t).
     Status(http.StatusCreated).   .
-    ContentType("text/html").
-    Test()
+    ContentType("text/html")
 } 
 ```
 
@@ -100,8 +98,7 @@ func TestPostForm(t *testing T) {
     "field": "value"
   }).Assert(t).
     Status(http.StatusCreated).   .
-    ContentType("text/html").
-    Test()
+    ContentType("text/html")
 } 
 ```
 
@@ -159,8 +156,7 @@ func TestListFilter(t *testing.T) {
             t.Errorf("Expected filter to return products only of category %s, but got %s", "a", p.category)
           }       
         } 
-      }).
-      Test()
+      })
 }
 ```
 
@@ -178,7 +174,6 @@ func TestUploadAttachments(t *testing T) {
         // then assert your expectations
         Assert(t).
         Status(http.StatusCreated).   .
-        ContentType("text/html").
-        Test()
+        ContentType("text/html")
 } 
 ```

@@ -23,10 +23,10 @@ var expectHeader = func(t *testing.T, header string, expectedValue string) http.
 }
 
 func TestHeader(t *testing.T) {
-	Call(expectHeader(t, "Allow-Origin", "*")).Header("Allow-Origin", "*").Assert(new(testing.T)).Test()
-	Call(expectHeader(t, "Allow-Origin", "")).Header("Content-Type", "text/plain").Assert(new(testing.T)).Test()
+	Call(expectHeader(t, "Allow-Origin", "*")).Header("Allow-Origin", "*").Assert(new(testing.T))
+	Call(expectHeader(t, "Allow-Origin", "")).Header("Content-Type", "text/plain").Assert(new(testing.T))
 }
 
 func TestContentType(t *testing.T) {
-	Call(expectHeader(t, "Content-Type", "text/plain")).ContentType("text/plain").Assert(new(testing.T)).Test()
+	Call(expectHeader(t, "Content-Type", "text/plain")).ContentType("text/plain").Assert(new(testing.T))
 }

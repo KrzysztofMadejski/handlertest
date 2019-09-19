@@ -6,54 +6,51 @@ import (
 )
 
 type Assert struct {
-	r *http.Response
-	t *testing.T
-
-	code           int // status code
-	headersSet     http.Header
-	headersMissing http.Header
-	body           func(t *testing.T, body []byte)
-	custom         func(t *testing.T, response *http.Response)
-}
-
-func New(t *testing.T, response *http.Response) *Assert {
-	return &Assert{
-		r:              response,
-		t:              t,
-		headersSet:     make(http.Header),
-		headersMissing: make(http.Header),
-	}
+	R *http.Response
+	T *testing.T
 }
 
 func (a *Assert) TestRun() func(*testing.T) {
 	return func(t *testing.T) {
 		// TODO test it
-		a.Test()
 	}
 }
 
 func (a *Assert) Status(statusCode int) *Assert {
-	a.code = statusCode
+	if a.R.StatusCode != statusCode {
+		a.T.Errorf("Expected statusCode %d, got %d", statusCode, a.R.StatusCode)
+	}
 
 	return a
 }
 
 func (a *Assert) Header(key string, value string) *Assert {
-	a.headersSet.Set(key, value)
+	values := a.R.Header[key]
+	if values == nil || len(values) == 0 {
+		a.T.Errorf("Expected header %s to be set, it is not", key)
+
+	} else if got := a.R.Header.Get(key); got != value {
+		a.T.Errorf("Expected header %s to be set to '%s', got '%s'", key, value, got)
+	}
+
 	return a
 }
 
 func (a *Assert) HeaderMissing(key string) *Assert {
-	a.headersMissing.Set(key, "")
+	value := a.R.Header.Get(key)
+	if value != "" {
+		a.T.Errorf("Expected header %s to be empty, got '%s'", key, value)
+	}
+
 	return a
 }
 
 func (a *Assert) ContentType(contentType string) *Assert {
-	a.headersSet.Set("Content-Type", contentType)
-	return a
+	return a.Header("Content-Type", contentType)
 }
 
 func (a *Assert) Custom(customTest func(t *testing.T, response *http.Response)) *Assert {
-	a.custom = customTest
+	customTest(a.T, a.R)
+
 	return a
 }

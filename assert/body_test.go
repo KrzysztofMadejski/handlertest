@@ -21,8 +21,8 @@ func TestExpectsBodyFunction(t *testing.T) {
 	mockT := new(testing.T)
 	handlertest.Call(setBody(`[{"id": 201809}]`, handlertest.ContentTypeJson)).Assert(mockT).
 		Body(func(t *testing.T, body []byte) {
-			// don't raise error on mockT
-		}).Test()
+			// don'T raise error on mockT
+		})
 	assert.False(t, mockT.Failed())
 }
 
@@ -40,9 +40,9 @@ func TestExpectsBodyFunctionFails(t *testing.T) {
 				return
 			}
 			if o.Id > 201807 {
-				mockT.Errorf("Expected Id to be something it wasn't")
+				mockT.Errorf("Expected Id to be something it wasn'T")
 			}
-		}).Test()
+		})
 	assert.True(t, mockT.Failed())
 }
 
@@ -50,16 +50,14 @@ func TestExpectsBodyFunctionFails(t *testing.T) {
 func TestExpectsJsonBody(t *testing.T) {
 	mockT := new(testing.T)
 	handlertest.Call(setBody(`[]`, handlertest.ContentTypeJson)).Assert(mockT).
-		JsonBody(`[]`).
-		Test()
+		JsonBody(`[]`)
 	assert.False(t, mockT.Failed())
 }
 
 func TestExpectsJsonBodyFails(t *testing.T) {
 	mockT := new(testing.T)
 	handlertest.Call(setBody(`[]`, handlertest.ContentTypeJson)).Assert(mockT).
-		JsonBody(`[{"id": 1}]`).
-		Test()
+		JsonBody(`[{"id": 1}]`)
 	assert.True(t, mockT.Failed(), "Assertion should fail when body is different")
 }
 
@@ -69,16 +67,14 @@ func TestExpectsJsonBodyFails(t *testing.T) {
 func TestExpectJsonType(t *testing.T) {
 	mockT := new(testing.T)
 	handlertest.Call(setBody(`[{"id": 1}]`, handlertest.ContentTypeJson)).Assert(mockT).
-		JsonUnmarshallsTo([]Obj{}).
-		Test()
+		JsonUnmarshallsTo([]Obj{})
 	assert.False(t, mockT.Failed())
 }
 
 func TestExpectJsonTypeFails(t *testing.T) {
 	mockT := new(testing.T)
 	handlertest.Call(setBody(`{"id": 1}`, handlertest.ContentTypeJson)).Assert(mockT).
-		JsonUnmarshallsTo([]Obj{}).
-		Test()
+		JsonUnmarshallsTo([]Obj{})
 	assert.True(t, mockT.Failed())
 }
 
@@ -92,7 +88,7 @@ func TestExpectJsonMatches(t *testing.T) {
 			if len(list) < 1 || list[0].Id != 1 {
 				t.Errorf("Expected list[0].id=1")
 			}
-		}).Test()
+		})
 
 	assert.False(t, mockT.Failed())
 }
@@ -100,17 +96,17 @@ func TestExpectJsonMatches(t *testing.T) {
 func TestExpectJsonMatchesCantUnmarshall(t *testing.T) {
 	mockT := new(testing.T)
 	handlertest.Call(setBody(`[{"id": 1}]`, handlertest.ContentTypeJson)).Assert(mockT).
-		JsonMatches(func(t *testing.T, obj Obj) {}).Test()
+		JsonMatches(func(t *testing.T, obj Obj) {})
 	assert.True(t, mockT.Failed())
 }
 
 func TestExpectJsonMatchesFails(t *testing.T) {
 	mockT := new(testing.T)
 	handlertest.Call(setBody(`[{"id": 1}]`, handlertest.ContentTypeJson)).Assert(mockT).
-		// TODO allow to use pointers also JsonMatches(func(t *testing.T, list *[]Obj) {
+		// TODO allow to use pointers also JsonMatches(func(T *testing.T, list *[]Obj) {
 		JsonMatches(func(t *testing.T, list []Obj) {
-			t.Errorf("Fail because something didn't meet your expectations")
-		}).Test()
+			t.Errorf("Fail because something didn'T meet your expectations")
+		})
 	assert.True(t, mockT.Failed())
 }
 
@@ -129,7 +125,7 @@ func TestExpectJsonMatchesWrongFunc(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			mockT := new(testing.T)
 			handlertest.Call(setBody(`[{"id": 1}]`, handlertest.ContentTypeJson)).Assert(mockT).
-				JsonMatches(tt.function).Test()
+				JsonMatches(tt.function)
 			assert.True(t, mockT.Failed())
 		})
 	}

@@ -13,11 +13,11 @@ func TestExpectsStatus(t *testing.T) {
 	}
 
 	mockT1 := new(testing.T)
-	handlertest.Call(handler).Assert(mockT1).Status(http.StatusOK).Test()
+	handlertest.Call(handler).Assert(mockT1).Status(http.StatusOK)
 	assert.False(t, mockT1.Failed())
 
 	mockT2 := new(testing.T)
-	handlertest.Call(handler).Assert(mockT2).Status(http.StatusAccepted).Test()
+	handlertest.Call(handler).Assert(mockT2).Status(http.StatusAccepted)
 	if !mockT2.Failed() {
 		t.Errorf("Status assertion should fail")
 	}
