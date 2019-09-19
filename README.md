@@ -7,12 +7,12 @@ func TestAPIGet(t *testing.T) {
   // create your request 
   handlertest.Call(yourHandler).GET("/jobs").
     // then assert your expectations
-    Assert().
+    Assert(t).
       Status(http.StatusOK).          
       Header("Allow-Origin: *").
       JsonBody(`[{"id": 1}]`).
       JsonUnmarshallsTo([]*models.Job).
-      Test(t)
+      Test()
 }
 
 // or
@@ -20,10 +20,10 @@ func TestAPIGet(t *testing.T) {
 func TestPostForm(t *testing T) {
   handlertest.Call(yourHandler).FormUrlEncodedMap(map[string]string{
     "field": "value"
-  }).Assert().
+  }).Assert(t).
     Status(http.StatusCreated).   .
     ContentType("text/html").
-    Test(t)
+    Test()
 } 
 ```
 
@@ -92,16 +92,16 @@ To implement custom modifications of response not covered by this lib use the be
 
 ## Assert 
 
-Once you created a needed request call on it `.Assert()` to get get an object where you can specify assertions.
+Once you created a needed request call on it `.Assert(t)` to get get an object where you can specify assertions.
 
 ```go
 func TestPostForm(t *testing T) {
   handlertest.Call(yourHandler).FormUrlEncodedMap(map[string]string{
     "field": "value"
-  }).Assert().
+  }).Assert(t).
     Status(http.StatusCreated).   .
     ContentType("text/html").
-    Test(t)
+    Test()
 } 
 ```
 
@@ -147,7 +147,7 @@ func TestListFilter(t *testing.T) {
   // create your request 
   handlertest.Call(yourHandler).GET("/products?category=a").
     // then assert your expectations
-    Assert().
+    Assert(t).
       Status(http.StatusOK).          
       JsonMatches(func(t *testing.T, products []Product) {
         // unmarshalling of JSON objects is done for you
@@ -160,7 +160,7 @@ func TestListFilter(t *testing.T) {
           }       
         } 
       }).
-      Test(t)
+      Test()
 }
 ```
 
@@ -176,9 +176,9 @@ func TestUploadAttachments(t *testing T) {
         }).
         File("files[]", "img1.jpg", "contents").
         // then assert your expectations
-        Assert().
+        Assert(t).
         Status(http.StatusCreated).   .
         ContentType("text/html").
-        Test(t)
+        Test()
 } 
 ```

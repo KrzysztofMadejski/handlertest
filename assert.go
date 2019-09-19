@@ -6,7 +6,8 @@ import (
 )
 
 type Assert struct {
-	r *Request
+	r *http.Response
+	t *testing.T
 
 	code           int // status code
 	headersSet     http.Header
@@ -15,9 +16,10 @@ type Assert struct {
 	custom         func(t *testing.T, response *http.Response)
 }
 
-func NewAssert(r *Request) *Assert {
+func newAssert(t *testing.T, response *http.Response) *Assert {
 	return &Assert{
-		r:              r,
+		r:              response,
+		t:              t,
 		headersSet:     make(http.Header),
 		headersMissing: make(http.Header),
 	}
@@ -25,7 +27,8 @@ func NewAssert(r *Request) *Assert {
 
 func (a *Assert) TestRun() func(*testing.T) {
 	return func(t *testing.T) {
-		a.Test(t)
+		// TODO test it
+		a.Test()
 	}
 }
 

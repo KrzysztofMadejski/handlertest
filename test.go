@@ -3,49 +3,16 @@ package handlertest
 import (
 	"github.com/stretchr/testify/assert"
 	"io/ioutil"
-	"net/http"
-	"net/http/httptest"
 	"testing"
 )
 
-func (a *Assert) Test(t *testing.T) {
-	// TODO move request creation to request.go?
-
-	// set method & url
-	req, err := http.NewRequest(a.r.method, a.r.url, a.r.getBodyReader(t))
-	if err != nil {
-		t.Fatal(err.Error())
-	}
-
-	// set headers
-	req.Header = a.r.headers
-
-	// TODO Populate the request's context with our test data.
-	//ctx := req.Context()
-	//ctx = context.WithValue(ctx, "app.auth.token", "abc123")
-	//ctx = context.WithValue(ctx, "app.user",
-	//	&YourUser{ID: "qejqjq", Email: "user@example.com"})
-	//
-	//// Add our context to the request: note that WithContext returns a copy of
-	//// the request, which we must assign.
-	//req = req.WithContext(ctx)
-
-	if a.r.custom != nil {
-		a.r.custom(req)
-	}
-
-	// ============================
-	// =========== TESTS ==========
-
-	recorder := httptest.NewRecorder()
-
-	a.r.handler.ServeHTTP(recorder, req)
-
-	response := recorder.Result()
+func (a *Assert) Test() {
+	response := a.r
+	t := a.t
 
 	// test status code
-	if a.code > 0 && recorder.Code != a.code {
-		t.Errorf("Expected statusCode %d, got %d", a.code, recorder.Code)
+	if a.code > 0 && response.StatusCode != a.code {
+		t.Errorf("Expected statusCode %d, got %d", a.code, response.StatusCode)
 	}
 
 	// test headers

@@ -8,7 +8,7 @@ import (
 func TestImports(t *testing.T) {
 	handler := func(http.ResponseWriter, *http.Request) {}
 
-	Call(handler).Assert().Test(t)
+	Call(handler).Assert(t).Test()
 }
 
 // TODO find and replace

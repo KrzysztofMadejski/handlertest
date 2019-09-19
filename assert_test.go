@@ -12,7 +12,7 @@ func TestHandlerIsCalled(t *testing.T) {
 		called = true
 	}
 
-	Call(handler).Assert().Test(new(testing.T))
+	Call(handler).Assert(new(testing.T)).Test()
 
 	if !called {
 		t.Errorf("Handler was not called")
@@ -23,7 +23,7 @@ func TestEmptyTest(t *testing.T) {
 	handler := func(w http.ResponseWriter, r *http.Request) {}
 
 	mockT1 := new(testing.T)
-	Call(handler).Assert().Test(mockT1)
+	Call(handler).Assert(mockT1).Test()
 	if mockT1.Failed() {
 		t.Errorf("Empty test should not fail")
 	}
@@ -31,13 +31,13 @@ func TestEmptyTest(t *testing.T) {
 
 // TODO test for TestRun
 // it seems that t creates a child t
-// t.Run("POST", Call(expectMethod("POST")).POST("/jobs").Assert().TestRun())
+// t.Run("POST", Call(expectMethod("POST")).POST("/jobs").Assert(mockT).TestRun())
 
 func TestCustomAssertions(t *testing.T) {
 	handler := func(w http.ResponseWriter, r *http.Request) {}
 	mockT := new(testing.T)
-	Call(handler).Assert().Custom(func(t *testing.T, response *http.Response) {
+	Call(handler).Assert(mockT).Custom(func(t *testing.T, response *http.Response) {
 		t.Error("Fail")
-	}).Test(mockT)
+	}).Test()
 	assert.True(t, mockT.Failed())
 }
