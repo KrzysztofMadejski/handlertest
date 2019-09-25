@@ -59,30 +59,30 @@ var expectForm = func(t *testing.T, expectedValues url.Values, is_multipart bool
 		assert.Equal(t, expectedValues, r.PostForm, "Expected request.PostForm to be populated at %s", at)
 
 		if numFiles > 0 {
-			if assert.NotNil(t, r.MultipartForm, "Expected form to have files") {
-				if assert.NotNil(t, r.MultipartForm.File, "Expected form to have files") {
-					for _, fheaders := range r.MultipartForm.File {
-						sort.Slice(fheaders, func(i, j int) bool {
-							return fheaders[i].Filename < fheaders[j].Filename
-						})
-						for i, fh := range fheaders {
-							assert.Equal(t, fmt.Sprintf("file%d.txt", i+1), fh.Filename)
+			if r.MultipartForm == nil || r.MultipartForm.File == nil {
+				t.Errorf("Expected MultipartForm to be set and have files")
+				return
+			}
+			for _, fheaders := range r.MultipartForm.File {
+				sort.Slice(fheaders, func(i, j int) bool {
+					return fheaders[i].Filename < fheaders[j].Filename
+				})
+				for i, fh := range fheaders {
+					assert.Equal(t, fmt.Sprintf("file%d.txt", i+1), fh.Filename)
 
-							f, err := fh.Open()
-							if err != nil {
-								t.Error(err)
-							}
-							defer func(f multipart.File) {
-								handle(t, f.Close())
-							}(f)
-
-							bytes, err := ioutil.ReadAll(f)
-							if err != nil {
-								t.Error(err)
-							}
-							assert.Equal(t, fmt.Sprintf("contents%d", i+1), string(bytes), "File content")
-						}
+					f, err := fh.Open()
+					if err != nil {
+						t.Error(err)
 					}
+					defer func(f multipart.File) {
+						handle(t, f.Close())
+					}(f)
+
+					bytes, err := ioutil.ReadAll(f)
+					if err != nil {
+						t.Error(err)
+					}
+					assert.Equal(t, fmt.Sprintf("contents%d", i+1), string(bytes), "File content")
 				}
 			}
 		}
