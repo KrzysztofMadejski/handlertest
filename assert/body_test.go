@@ -7,9 +7,10 @@ import (
 	"testing"
 )
 
-// TODO contentType unused
 func setBody(content string, contentType string) func(w http.ResponseWriter, r *http.Request) {
 	handler := func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", contentType)
+
 		w.Write([]byte(content))
 		// TODO test for error
 	}
@@ -68,7 +69,30 @@ func TestExpectsJsonBodyFails(t *testing.T) {
 	}
 }
 
-// TODO test json indenting
+func TestExpectsJsonBodyIndentHoweverYouLike(t *testing.T) {
+	mockT := new(testing.T)
+	handlertest.Call(setBody(`[{"id": 
+1, "someOtherField": "and its content"}]`, handlertest.ContentTypeJSON)).Assert(mockT).
+		JsonBody(`[
+  {
+    "id": 1,
+    "someOtherField": "and its content"
+  }
+]`)
+	if mockT.Failed() {
+		t.Errorf("Expected assertion to pass")
+	}
+}
+
+func TestExpectsJsonBodyFailsIfNotValidJSON(t *testing.T) {
+	mockT := new(testing.T)
+	handlertest.Call(setBody(`[{]`, handlertest.ContentTypeJSON)).Assert(mockT).
+		JsonBody(`[]`)
+	if !mockT.Failed() {
+		t.Errorf("Expected assertion to fail")
+	}
+}
+
 // TODO test error message returns a nice diff during extended run
 
 func TestExpectJsonType(t *testing.T) {

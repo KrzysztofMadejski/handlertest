@@ -1,17 +1,54 @@
 package assert
 
 import (
+	"bytes"
 	"encoding/json"
-	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"reflect"
 	"testing"
 )
 
+func CompactJsonb(jsonBytes []byte, t *testing.T) string {
+	dst := new(bytes.Buffer)
+	if err := json.Compact(dst, jsonBytes); err != nil {
+		t.Error(err)
+		return ""
+	}
+
+	return dst.String()
+}
+func CompactJson(jsonStr string, t *testing.T) string {
+	return CompactJsonb([]byte(jsonStr), t)
+}
+
+func IndentJsonb(jsonBytes []byte, t *testing.T) string {
+	dst := new(bytes.Buffer)
+	if err := json.Indent(dst, jsonBytes, "", "\t"); err != nil {
+		t.Error(err)
+		return ""
+	}
+
+	return dst.String()
+}
+func IndentJson(jsonStr string, t *testing.T) string {
+	return IndentJsonb([]byte(jsonStr), t)
+}
+
 func (a *Assert) JsonBody(expectedContent string) *Assert {
 	return a.Body(func(t *testing.T, body []byte) {
-		assert.Equal(t, expectedContent, string(body)) // TODO oneliner response + diff
-	})
+		if expectedContent == "" {
+			t.Errorf("Empty string is not a valid json")
+			return
+		}
+
+		expectedContent := CompactJson(expectedContent, t)
+		actual := CompactJsonb(body, t)
+
+		if expectedContent != "" && actual != "" && expectedContent != actual {
+			t.Errorf("Expected JSON response '%s', but got '%s", expectedContent, actual)
+		}
+		// TODO diff
+	}).ContentType("application/json") // TODO contenttype.JSON)
 }
 
 func (a *Assert) Body(test func(*testing.T, []byte)) *Assert {
