@@ -2,6 +2,7 @@ package handlertest
 
 import (
 	"fmt"
+	"github.com/google/go-cmp/cmp"
 	"github.com/stretchr/testify/assert"
 	"io"
 	"io/ioutil"
@@ -26,7 +27,9 @@ var expectBody = func(t *testing.T, expectedBody string, contentType string) htt
 
 		} else {
 			bodyString := string(bodyBytes)
-			assert.Equalf(t, expectedBody, bodyString, "Expected body to be different at %s", at)
+			if expectedBody != bodyString {
+				t.Errorf("Expected body to be different at %s. Expected '%s', got '%s'", at, expectedBody, bodyString)
+			}
 		}
 	}
 }
@@ -55,34 +58,46 @@ var expectForm = func(t *testing.T, expectedValues url.Values, is_multipart bool
 			handle(t, r.ParseForm())
 		}
 
-		assert.Equal(t, expectedValues, r.Form, "Expected request.Form to be populated at %s", at)
-		assert.Equal(t, expectedValues, r.PostForm, "Expected request.PostForm to be populated at %s", at)
+		if !cmp.Equal(expectedValues, r.Form) {
+			t.Errorf("Expected request.Form to be %+v. but got %+v at %s", expectedValues, r.Form, at)
+		}
+		if !cmp.Equal(expectedValues, r.PostForm) {
+			t.Errorf("Expected request.PostForm to be %+v. but got %+v at %s", expectedValues, r.Form, at)
+		}
 
-		if numFiles > 0 {
-			if r.MultipartForm == nil || r.MultipartForm.File == nil {
-				t.Errorf("Expected MultipartForm to be set and have files")
-				return
-			}
-			for _, fheaders := range r.MultipartForm.File {
-				sort.Slice(fheaders, func(i, j int) bool {
-					return fheaders[i].Filename < fheaders[j].Filename
-				})
-				for i, fh := range fheaders {
-					assert.Equal(t, fmt.Sprintf("file%d.txt", i+1), fh.Filename)
+		if numFiles == 0 {
+			return
+		}
+		if r.MultipartForm == nil || r.MultipartForm.File == nil {
+			t.Errorf("Expected MultipartForm to be set and have files")
+			return
+		}
+		for _, fheaders := range r.MultipartForm.File {
+			sort.Slice(fheaders, func(i, j int) bool {
+				return fheaders[i].Filename < fheaders[j].Filename
+			})
+			for i, fh := range fheaders {
+				fileName := fmt.Sprintf("file%d.txt", i+1)
+				if fileName != fh.Filename {
+					t.Errorf("Expected file %s at position %d", fileName, i)
+				}
 
-					f, err := fh.Open()
-					if err != nil {
-						t.Error(err)
-					}
-					defer func(f multipart.File) {
-						handle(t, f.Close())
-					}(f)
+				f, err := fh.Open()
+				if err != nil {
+					t.Error(err)
+				}
+				defer func(f multipart.File) {
+					handle(t, f.Close())
+				}(f)
 
-					bytes, err := ioutil.ReadAll(f)
-					if err != nil {
-						t.Error(err)
-					}
-					assert.Equal(t, fmt.Sprintf("contents%d", i+1), string(bytes), "File content")
+				bytes, err := ioutil.ReadAll(f)
+				if err != nil {
+					t.Error(err)
+				}
+				actualContents := string(bytes)
+				expectedContents := fmt.Sprintf("contents%d", i+1)
+				if expectedContents != actualContents {
+					t.Errorf("Expected content '%s', but got '%s' at %d", expectedContents, actualContents, i)
 				}
 			}
 		}
