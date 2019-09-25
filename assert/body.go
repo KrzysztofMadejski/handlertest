@@ -34,7 +34,12 @@ func IndentJson(jsonStr string, t *testing.T) string {
 	return IndentJsonb([]byte(jsonStr), t)
 }
 
-func (a *Assert) JsonBody(expectedContent string) *Assert {
+// TODO Diff should be called as JsonDiff or by some flag?
+//var shouldDiff = flag.Bool("handlertest.diff", false, "")
+//flag.Parse()
+//log.Printf("Should diff %v", *shouldDiff)
+
+func (a *Assert) Json(expectedContent string) *Assert {
 	return a.Body(func(t *testing.T, body []byte) {
 		if expectedContent == "" {
 			t.Errorf("Empty string is not a valid json")

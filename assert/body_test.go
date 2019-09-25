@@ -51,10 +51,10 @@ func TestExpectsBodyFunctionFails(t *testing.T) {
 }
 
 // TODO charset: utf-8 in Content-Type
-func TestExpectsJsonBody(t *testing.T) {
+func TestExpectsJson(t *testing.T) {
 	mockT := new(testing.T)
 	handlertest.Call(setBody(`[]`, handlertest.ContentTypeJSON)).Assert(mockT).
-		JsonBody(`[]`)
+		Json(`[]`)
 	if mockT.Failed() {
 		t.Errorf("Expected assertion to pass")
 	}
@@ -63,7 +63,7 @@ func TestExpectsJsonBody(t *testing.T) {
 func TestExpectsJsonBodyFails(t *testing.T) {
 	mockT := new(testing.T)
 	handlertest.Call(setBody(`[]`, handlertest.ContentTypeJSON)).Assert(mockT).
-		JsonBody(`[{"id": 1}]`)
+		Json(`[{"id": 1}]`)
 	if !mockT.Failed() {
 		t.Errorf("Assertion should fail when body is different")
 	}
@@ -73,7 +73,7 @@ func TestExpectsJsonBodyIndentHoweverYouLike(t *testing.T) {
 	mockT := new(testing.T)
 	handlertest.Call(setBody(`[{"id": 
 1, "someOtherField": "and its content"}]`, handlertest.ContentTypeJSON)).Assert(mockT).
-		JsonBody(`[
+		Json(`[
   {
     "id": 1,
     "someOtherField": "and its content"
@@ -87,7 +87,7 @@ func TestExpectsJsonBodyIndentHoweverYouLike(t *testing.T) {
 func TestExpectsJsonBodyFailsIfNotValidJSON(t *testing.T) {
 	mockT := new(testing.T)
 	handlertest.Call(setBody(`[{]`, handlertest.ContentTypeJSON)).Assert(mockT).
-		JsonBody(`[]`)
+		Json(`[]`)
 	if !mockT.Failed() {
 		t.Errorf("Expected assertion to fail")
 	}

@@ -10,7 +10,7 @@ func TestAPIGet(t *testing.T) {
     Assert(t).
       Status(http.StatusOK).          
       Header("Allow-Origin: *").
-      JsonBody(`[{"id": 1}]`).
+      Json(`[{"id": 1}]`).
       JsonUnmarshallsTo([]*models.Job)
 }
 
@@ -118,7 +118,7 @@ There is one general function that lets you assert that handler provided a speci
 - `Body(func(t *testing.T, body []byte))`
 		
 To support asserting for json response common in API development there are following assertions that tests that Content-Type is set right and offer different ways to assert for the body contents: 
-- ```JsonBody(`[{"id": 1}]`)``` - providing it as a string. Indentation here doesn't play a role and there will be an option to show diff between expected and actual values.
+- ```Json(`[{"id": 1}]`)``` - providing it as a string. Indentation here doesn't play a role and there will be an option to show diff between expected and actual values.
 - `JsonUnmarshallsTo([]Obj{})` - there is simple assertion that tests unmarshalling 
 - `JsonMatches(func(t *testing.T, ret []Obj)` - in case it's hard to predict your whole response, 
 or you don't want to test the whole response, you might use this function 
