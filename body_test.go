@@ -3,7 +3,7 @@ package handlertest
 import (
 	"fmt"
 	"github.com/google/go-cmp/cmp"
-	"github.com/stretchr/testify/assert"
+	"github.com/krzysztofmadejski/handlertest/internal"
 	"io"
 	"io/ioutil"
 	"mime/multipart"
@@ -15,8 +15,7 @@ import (
 )
 
 var expectBody = func(t *testing.T, expectedBody string, contentType string) http.HandlerFunc {
-	// TODo pull that func in
-	at := assert.CallerInfo()[1]
+	at := internal.CallerInfo()[1]
 	return func(w http.ResponseWriter, r *http.Request) {
 		expectHeader(t, "Content-Type", contentType)(w, r)
 
@@ -42,8 +41,7 @@ func TestJsonBody(t *testing.T) {
 }
 
 var expectForm = func(t *testing.T, expectedValues url.Values, is_multipart bool, method string, numFiles int) http.HandlerFunc {
-	// TODo pull that CallerInfo func in
-	at := assert.CallerInfo()[1]
+	at := internal.CallerInfo()[1]
 	return func(w http.ResponseWriter, r *http.Request) {
 		if is_multipart {
 			cType := r.Header.Get("Content-Type")

@@ -1,14 +1,14 @@
 package handlertest
 
 import (
-	"github.com/stretchr/testify/assert"
+	"github.com/krzysztofmadejski/handlertest/internal"
 	"net/http"
 	"testing"
 )
 
 func TestMethod(t *testing.T) {
 	expectMethod := func(method string) http.HandlerFunc {
-		at := assert.CallerInfo()[1]
+		at := internal.CallerInfo()[1]
 		return func(w http.ResponseWriter, r *http.Request) {
 			// expect handler to be called with given method
 			if r.Method != method {

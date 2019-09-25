@@ -1,13 +1,13 @@
 package handlertest
 
 import (
-	"github.com/stretchr/testify/assert"
+	"github.com/krzysztofmadejski/handlertest/internal"
 	"net/http"
 	"testing"
 )
 
 var expectHeader = func(t *testing.T, header string, expectedValue string) http.HandlerFunc {
-	at := assert.CallerInfo()[1]
+	at := internal.CallerInfo()[1]
 	return func(w http.ResponseWriter, r *http.Request) {
 		value := r.Header.Get(header)
 		if expectedValue != "" && value == "" {
