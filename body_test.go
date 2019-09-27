@@ -2,13 +2,13 @@ package handlertest
 
 import (
 	"fmt"
-	"github.com/google/go-cmp/cmp"
 	"github.com/krzysztofmadejski/handlertest/internal"
 	"io"
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"
 	"net/url"
+	"reflect"
 	"sort"
 	"strings"
 	"testing"
@@ -56,10 +56,10 @@ var expectForm = func(t *testing.T, expectedValues url.Values, is_multipart bool
 			handle(t, r.ParseForm())
 		}
 
-		if !cmp.Equal(expectedValues, r.Form) {
+		if !reflect.DeepEqual(expectedValues, r.Form) {
 			t.Errorf("Expected request.Form to be %+v. but got %+v at %s", expectedValues, r.Form, at)
 		}
-		if !cmp.Equal(expectedValues, r.PostForm) {
+		if !reflect.DeepEqual(expectedValues, r.PostForm) {
 			t.Errorf("Expected request.PostForm to be %+v. but got %+v at %s", expectedValues, r.Form, at)
 		}
 

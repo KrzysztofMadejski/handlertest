@@ -3,7 +3,9 @@ package assert_test
 import (
 	"encoding/json"
 	"github.com/krzysztofmadejski/handlertest"
+	"github.com/krzysztofmadejski/handlertest/assert"
 	"net/http"
+	"os"
 	"testing"
 )
 
@@ -93,7 +95,57 @@ func TestExpectsJsonBodyFailsIfNotValidJSON(t *testing.T) {
 	}
 }
 
-// TODO test error message returns a nice diff during extended run
+func TestExpectsJsonDiffCalled(t *testing.T) {
+	mockT := new(testing.T)
+	if err := os.Setenv("HANDLERTEST_DIFF", "true"); err != nil {
+		t.Fatal(err)
+	}
+
+	a := handlertest.Call(setBody(`[{"id": 
+1, "someOtherField": "and it content"}]`, handlertest.ContentTypeJSON)).Assert(mockT)
+
+	var differCalled bool
+	assert.SetDiff(func(minusPrefixed, plusPrefixed interface{}) string {
+		differCalled = true
+		return "+"
+	})
+
+	a.Json(`[
+  {
+    "id": 1,
+    "someOtherField": "and its content"
+  }
+]`)
+	if !mockT.Failed() {
+		t.Errorf("Expected assertion to fail")
+	}
+	if !differCalled {
+		t.Errorf("Expected Differ to be called")
+	}
+
+	assert.SetDiff(nil)
+	if err := os.Setenv("HANDLERTEST_DIFF", "false"); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestExpectsJsonDiffNotSet(t *testing.T) {
+	mockT := new(testing.T)
+	if err := os.Setenv("HANDLERTEST_DIFF", "true"); err != nil {
+		t.Fatal(err)
+	}
+
+	a := handlertest.Call(setBody(`[]`, handlertest.ContentTypeJSON)).Assert(mockT)
+	a.Json(`[]`)
+
+	if !mockT.Failed() {
+		t.Errorf("Expected assertion to fail because differ is not set")
+	}
+
+	if err := os.Setenv("HANDLERTEST_DIFF", "false"); err != nil {
+		t.Fatal(err)
+	}
+}
 
 func TestExpectJsonType(t *testing.T) {
 	mockT := new(testing.T)

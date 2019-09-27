@@ -4,7 +4,9 @@ import (
 	"bytes"
 	"encoding/json"
 	"io/ioutil"
+	"os"
 	"reflect"
+	"strconv"
 	"testing"
 )
 
@@ -34,10 +36,13 @@ func IndentJson(jsonStr string, t *testing.T) string {
 	return IndentJsonb([]byte(jsonStr), t)
 }
 
-// TODO Diff should be called as JsonDiff or by some flag?
-//var shouldDiff = flag.Bool("handlertest.diff", false, "")
-//flag.Parse()
-//log.Printf("Should diff %v", *shouldDiff)
+func shouldDiff() bool {
+	ret, err := strconv.ParseBool(os.Getenv("HANDLERTEST_DIFF"))
+	if err != nil {
+		return false // default
+	}
+	return ret
+}
 
 func (a *Assert) Json(expectedContent string) *Assert {
 	return a.Body(func(t *testing.T, body []byte) {
@@ -46,13 +51,28 @@ func (a *Assert) Json(expectedContent string) *Assert {
 			return
 		}
 
-		expectedContent := CompactJson(expectedContent, t)
-		actual := CompactJsonb(body, t)
+		var actual string
+		if shouldDiff() {
+			if differ != nil {
+				expectedContent = IndentJson(expectedContent, t)
+				actual = IndentJsonb(body, t)
+
+				if expectedContent != "" && actual != "" && expectedContent != actual {
+					diff := differ(expectedContent, actual)
+					t.Error("Expected JSON response -expected,+actual ", diff)
+				}
+				return
+			}
+			t.Errorf("You set HANDLERTEST_DIFF, but didn't configure Differ with handlertest.SetDiff(d Differ)")
+		}
+
+		// compact version
+		expectedContent = CompactJson(expectedContent, t)
+		actual = CompactJsonb(body, t)
 
 		if expectedContent != "" && actual != "" && expectedContent != actual {
 			t.Errorf("Expected JSON response '%s', but got '%s", expectedContent, actual)
 		}
-		// TODO diff
 	}).ContentType("application/json") // TODO contenttype.JSON)
 }
 
