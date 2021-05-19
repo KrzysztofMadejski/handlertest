@@ -9,7 +9,7 @@ func TestAPIGet(t *testing.T) {
     // then assert your expectations
     Assert(t).
       Status(http.StatusOK).          
-      Header("Allow-Origin: *").
+      Header("Allow-Origin", "*").
       Json(`[{"id": 1}]`).
       JsonUnmarshallsTo([]*models.Job)
 }
